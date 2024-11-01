@@ -52,7 +52,7 @@ class _PasswordInputFieldState extends State<PasswordInputField> {
       validationState: widget.validationState,
       errorText: widget.errorText,
       hideErrorText: widget.hideErrorText,
-      obscureText: _passwordVisible,
+      obscureText: !_passwordVisible,
       inputFormatters: widget.inputFormatters,
       maxLength: widget.maxLength,
       keyboardType: widget.keyboardType,
