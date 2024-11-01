@@ -1,22 +1,11 @@
-import 'package:clario_test/sign_up_screen.dart';
+import 'package:clario_test/clario_app.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Clario test assignment',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF70C3FF)),
-        useMaterial3: true,
-      ),
-      home: const SignUpScreen(),
-    );
-  }
+  runApp(const ClarioApp());
 }
