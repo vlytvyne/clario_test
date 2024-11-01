@@ -247,16 +247,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _emailFocusNode.unfocus();
     _passwordFocusNode.unfocus();
 
-    _validateEmail();
-    _validatePassword();
+    final isEmailValid = _validateEmail();
+    final isPasswordValid = _validatePassword();
+
+    if (isEmailValid && isPasswordValid) {
+      _showSignUpSuccessDialog();
+    }
   }
 
-  void _validateEmail() {
-    setState(() {
-      final email = _emailController.text;
+  bool _validateEmail() {
+    final email = _emailController.text;
 
-      final isEmailValid = EmailValidator(errorText: StringRes.invalidEmail)
-        .isValid(email);
+    final isEmailValid = EmailValidator(errorText: StringRes.invalidEmail)
+      .isValid(email);
+
+    setState(() {
       if (isEmailValid) {
         _emailValidationState = ValidationState.valid;
       } else {
@@ -268,28 +273,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
         }
       }
     });
+
+    return isEmailValid;
   }
 
-  void _validatePassword() {
+  bool _validatePassword() {
+    final password = _passwordController.text;
+
+    _passwordEightOrMoreCharacters = _passwordEightOrMoreCharactersValidator.isValid(password)
+      ? ValidationState.valid
+      : ValidationState.notValid;
+    _passwordUppercaseAndLowercase = _passwordUppercaseAndLowercaseValidator.isValid(password)
+      ? ValidationState.valid
+      : ValidationState.notValid;
+    _passwordAtLeastOneDigit = _passwordAtLeastOneDigitValidator.isValid(password)
+      ? ValidationState.valid
+      : ValidationState.notValid;
+
+    final isPasswordValid = [
+      _passwordEightOrMoreCharacters,
+      _passwordUppercaseAndLowercase,
+      _passwordAtLeastOneDigit,
+    ].every((e) => e == ValidationState.valid);
+
     setState(() {
-      final password = _passwordController.text;
-
-      _passwordEightOrMoreCharacters = _passwordEightOrMoreCharactersValidator.isValid(password)
-        ? ValidationState.valid
-        : ValidationState.notValid;
-      _passwordUppercaseAndLowercase = _passwordUppercaseAndLowercaseValidator.isValid(password)
-        ? ValidationState.valid
-        : ValidationState.notValid;
-      _passwordAtLeastOneDigit = _passwordAtLeastOneDigitValidator.isValid(password)
-        ? ValidationState.valid
-        : ValidationState.notValid;
-
-      final isPasswordValid = [
-        _passwordEightOrMoreCharacters,
-        _passwordUppercaseAndLowercase,
-        _passwordAtLeastOneDigit,
-      ].every((e) => e == ValidationState.valid);
-
       if (isPasswordValid) {
         _passwordValidationState = ValidationState.valid;
       } else {
@@ -297,6 +304,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
         _passwordErrorText = StringRes.invalidPassword;
       }
     });
+
+    return isPasswordValid;
+  }
+
+  void _showSignUpSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          icon: Icon(
+            Icons.check_circle,
+            size: 40,
+            color: Colors.green,
+          ),
+          title: Text(
+            StringRes.signUpSuccess,
+          ),
+        );
+      },
+    );
   }
 
   @override

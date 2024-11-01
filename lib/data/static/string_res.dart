@@ -13,4 +13,6 @@ class StringRes {
   static const enterYourEmail = 'Enter your email';
   static const createYourPassword = 'Create your password';
 
+  static const signUpSuccess = 'Sign up success';
+
 }
