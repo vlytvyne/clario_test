@@ -1,14 +1,14 @@
-import 'package:clario_test/app_assets.dart';
-import 'package:clario_test/app_colors.dart';
-import 'package:clario_test/clario_text_input_field.dart';
-import 'package:clario_test/enums.dart';
-import 'package:clario_test/string_res.dart';
+import 'package:clario_test/app/app_assets.dart';
+import 'package:clario_test/ui/styles/app_colors.dart';
+import 'package:clario_test/ui/widgets/clario_text_input_field.dart';
+import 'package:clario_test/data/static/enums.dart';
+import 'package:clario_test/data/static/string_res.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:gap/gap.dart';
 
-import 'gradient_button.dart';
+import '../widgets/gradient_button.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -121,66 +121,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: Column(
                   children: [
                     const Gap(120),
-                    Text(
-                      StringRes.signUp,
-                      style: TextStyle(
-                        color: AppColors.text.title,
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    _buildTitle(),
                     const Gap(40),
-                    ClarioTextInputField(
-                      controller: _emailController,
-                      focusNode: _emailFocusNode,
-                      validationState: _emailValidationState,
-                      errorText: _emailErrorText,
-                    ),
+                    _buildEmailInputField(),
                     const Gap(20),
-                    ClarioTextInputField(
-                      controller: _passwordController,
-                      focusNode: _passwordFocusNode,
-                      validationState: _passwordValidationState,
-                      errorText: _passwordErrorText,
-                      hideErrorText: true,
-                    ),
+                    buildPasswordInputField(),
                     const Gap(20),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              StringRes.eightCharsOrMore,
-                              style: _composePasswordHintTextStyle(_passwordEightOrMoreCharacters),
-                            ),
-                            Text(
-                              StringRes.uppercaseAndLowercaseLetters,
-                              style: _composePasswordHintTextStyle(_passwordUppercaseAndLowercase),
-                            ),
-                            Text(
-                              StringRes.atLeastOneDigit,
-                              style: _composePasswordHintTextStyle(_passwordAtLeastOneDigit),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    _buildPasswordRealtimeHints(),
                     const Gap(40),
-                    GradientButton(
-                      gradient: const LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [
-                          Color(0xFF70C3FF),
-                          Color(0xFF4B65FF),
-                        ],
-                      ),
-                      onClick: onSignUpClick,
-                      label: StringRes.signUp,
-                    ),
+                    _buildSignUpButton(),
                   ],
                 ),
               ),
@@ -188,6 +137,77 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Text _buildTitle() {
+    return Text(
+      StringRes.signUp,
+      style: TextStyle(
+        color: AppColors.text.title,
+        fontSize: 28,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  ClarioTextInputField _buildEmailInputField() {
+    return ClarioTextInputField(
+      controller: _emailController,
+      focusNode: _emailFocusNode,
+      validationState: _emailValidationState,
+      errorText: _emailErrorText,
+    );
+  }
+
+  ClarioTextInputField buildPasswordInputField() {
+    return ClarioTextInputField(
+      controller: _passwordController,
+      focusNode: _passwordFocusNode,
+      validationState: _passwordValidationState,
+      errorText: _passwordErrorText,
+      hideErrorText: true,
+    );
+  }
+
+  Align _buildPasswordRealtimeHints() {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              StringRes.eightCharsOrMore,
+              style: _composePasswordHintTextStyle(_passwordEightOrMoreCharacters),
+            ),
+            Text(
+              StringRes.uppercaseAndLowercaseLetters,
+              style: _composePasswordHintTextStyle(_passwordUppercaseAndLowercase),
+            ),
+            Text(
+              StringRes.atLeastOneDigit,
+              style: _composePasswordHintTextStyle(_passwordAtLeastOneDigit),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  GradientButton _buildSignUpButton() {
+    return GradientButton(
+      gradient: const LinearGradient(
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+        colors: [
+          Color(0xFF70C3FF),
+          Color(0xFF4B65FF),
+        ],
+      ),
+      onClick: _onSignUpClick,
+      label: StringRes.signUp,
     );
   }
 
@@ -202,7 +222,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  void onSignUpClick() {
+  void _onSignUpClick() {
     _emailFocusNode.unfocus();
     _passwordFocusNode.unfocus();
 

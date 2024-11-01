@@ -1,5 +1,5 @@
-import 'package:clario_test/app_colors.dart';
-import 'package:clario_test/enums.dart';
+import 'package:clario_test/ui/styles/app_colors.dart';
+import 'package:clario_test/data/static/enums.dart';
 import 'package:flutter/material.dart';
 
 class ClarioTextInputField extends StatefulWidget {
@@ -56,7 +56,7 @@ class _ClarioTextInputFieldState extends State<ClarioTextInputField> {
         focusedBorder: _composeBorder(AppColors.inputField.focusedBorder),
         errorBorder: _composeBorder(AppColors.inputField.errorBorder),
         focusedErrorBorder: _composeBorder(AppColors.inputField.focusedBorder),
-      )
+      ),
     );
   }
 

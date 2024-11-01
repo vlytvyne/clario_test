@@ -1,6 +1,6 @@
-import 'package:clario_test/app_colors.dart';
-import 'package:clario_test/sign_up_screen.dart';
-import 'package:clario_test/string_res.dart';
+import 'package:clario_test/ui/styles/app_colors.dart';
+import 'package:clario_test/ui/screens/sign_up_screen.dart';
+import 'package:clario_test/data/static/string_res.dart';
 import 'package:flutter/material.dart';
 
 class ClarioApp extends StatelessWidget {
