@@ -1,6 +1,7 @@
 import 'package:clario_test/ui/styles/app_colors.dart';
 import 'package:clario_test/data/static/enums.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ClarioTextInputField extends StatefulWidget {
 
@@ -9,6 +10,14 @@ class ClarioTextInputField extends StatefulWidget {
   final ValidationState validationState;
   final String? errorText;
   final bool hideErrorText;
+  final Widget? suffixIcon;
+  final bool obscureText;
+  final List<TextInputFormatter>? inputFormatters;
+  final int? maxLength;
+  final String? hintText;
+  final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
+  
 
   const ClarioTextInputField({
     super.key,
@@ -17,6 +26,13 @@ class ClarioTextInputField extends StatefulWidget {
     this.validationState = ValidationState.unknown,
     this.errorText,
     this.hideErrorText = false,
+    this.suffixIcon,
+    this.obscureText = false,
+    this.inputFormatters,
+    this.maxLength,
+    this.hintText,
+    this.keyboardType,
+    this.textInputAction,
   });
 
   @override
@@ -27,16 +43,31 @@ class _ClarioTextInputFieldState extends State<ClarioTextInputField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return TextField(
       controller: widget.controller,
       focusNode: widget.focusNode,
       cursorColor: AppColors.inputField.cursor,
+      obscureText: widget.obscureText,
+      inputFormatters: widget.inputFormatters,
+      maxLength: widget.maxLength,
+      keyboardType: widget.keyboardType,
+      textInputAction: widget.textInputAction,
       style: switch (widget.validationState) {
         ValidationState.unknown => TextStyle(color: AppColors.inputField.enabledText,),
         ValidationState.valid => TextStyle(color: AppColors.inputField.successText,),
         ValidationState.notValid => TextStyle(color: AppColors.inputField.errorText,),
       },
       decoration: InputDecoration(
+        counterText: '',
+        hintText: widget.hintText,
+        hintStyle: TextStyle(
+          color: widget.validationState == ValidationState.notValid
+            ? AppColors.inputField.errorText
+            : AppColors.inputField.enabledText,
+          fontSize: 16,
+          fontWeight: FontWeight.normal,
+        ),
+        suffixIcon: widget.suffixIcon,
         errorText: widget.errorText,
         errorStyle: TextStyle(
           color: AppColors.inputField.errorText,

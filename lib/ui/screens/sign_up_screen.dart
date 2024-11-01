@@ -1,14 +1,16 @@
 import 'package:clario_test/app/app_assets.dart';
 import 'package:clario_test/ui/styles/app_colors.dart';
-import 'package:clario_test/ui/widgets/clario_text_input_field.dart';
+import 'package:clario_test/ui/widgets/input_fields/clario_text_input_field.dart';
 import 'package:clario_test/data/static/enums.dart';
 import 'package:clario_test/data/static/string_res.dart';
+import 'package:clario_test/ui/widgets/input_fields/password_input_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:gap/gap.dart';
 
-import '../widgets/gradient_button.dart';
+import '../widgets/buttons/gradient_button.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -107,33 +109,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ],
           ),
         ),
-        child: SafeArea(
-          child: Stack(
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: SvgPicture.asset(
-                  ImageAssets.starsBackground,
-                ),
+        child: SingleChildScrollView(
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: SafeArea(
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: SvgPicture.asset(
+                      ImageAssets.starsBackground,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: Column(
+                      children: [
+                        const Gap(120),
+                        _buildTitle(),
+                        const Gap(40),
+                        _buildEmailInputField(),
+                        const Gap(20),
+                        buildPasswordInputField(),
+                        const Gap(20),
+                        _buildPasswordRealtimeHints(),
+                        const Gap(40),
+                        _buildSignUpButton(),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                  children: [
-                    const Gap(120),
-                    _buildTitle(),
-                    const Gap(40),
-                    _buildEmailInputField(),
-                    const Gap(20),
-                    buildPasswordInputField(),
-                    const Gap(20),
-                    _buildPasswordRealtimeHints(),
-                    const Gap(40),
-                    _buildSignUpButton(),
-                  ],
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -151,26 +158,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  ClarioTextInputField _buildEmailInputField() {
+  Widget _buildEmailInputField() {
     return ClarioTextInputField(
       controller: _emailController,
       focusNode: _emailFocusNode,
       validationState: _emailValidationState,
       errorText: _emailErrorText,
+      hintText: StringRes.enterYourEmail,
+      maxLength: 120,
+      keyboardType: TextInputType.emailAddress,
+      textInputAction: TextInputAction.next,
+      inputFormatters: [
+        FilteringTextInputFormatter.deny(RegExp(r'\s')),
+      ],
     );
   }
 
-  ClarioTextInputField buildPasswordInputField() {
-    return ClarioTextInputField(
+  Widget buildPasswordInputField() {
+    return PasswordInputField(
       controller: _passwordController,
       focusNode: _passwordFocusNode,
       validationState: _passwordValidationState,
       errorText: _passwordErrorText,
       hideErrorText: true,
+      hintText: StringRes.createYourPassword,
+      maxLength: 64,
+      keyboardType: TextInputType.visiblePassword,
+      textInputAction: TextInputAction.done,
+      inputFormatters: [
+        FilteringTextInputFormatter.deny(RegExp(r'\s')),
+      ],
     );
   }
 
-  Align _buildPasswordRealtimeHints() {
+  Widget _buildPasswordRealtimeHints() {
     return Align(
       alignment: Alignment.centerLeft,
       child: Padding(
@@ -196,7 +217,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  GradientButton _buildSignUpButton() {
+  Widget _buildSignUpButton() {
     return GradientButton(
       gradient: const LinearGradient(
         begin: Alignment.centerLeft,
@@ -214,7 +235,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextStyle _composePasswordHintTextStyle(ValidationState validationState) {
     return TextStyle(
       fontSize: 13,
-      color: switch (_passwordAtLeastOneDigit) {
+      color: switch (validationState) {
         ValidationState.valid => AppColors.inputField.successText,
         ValidationState.notValid => AppColors.inputField.errorText,
         ValidationState.unknown => AppColors.inputField.enabledText,
@@ -232,13 +253,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _validateEmail() {
     setState(() {
+      final email = _emailController.text;
+
       final isEmailValid = EmailValidator(errorText: StringRes.invalidEmail)
-        .isValid(_emailController.text);
+        .isValid(email);
       if (isEmailValid) {
         _emailValidationState = ValidationState.valid;
       } else {
         _emailValidationState = ValidationState.notValid;
-        _emailErrorText = StringRes.invalidEmail;
+        if (email.isEmpty) {
+          _emailErrorText = StringRes.cantBeEmpty;
+        } else {
+          _emailErrorText = StringRes.invalidEmail;
+        }
       }
     });
   }
@@ -259,8 +286,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       final isPasswordValid = [
         _passwordEightOrMoreCharacters,
+        _passwordUppercaseAndLowercase,
         _passwordAtLeastOneDigit,
-        _passwordUppercaseAndLowercase
       ].every((e) => e == ValidationState.valid);
 
       if (isPasswordValid) {

@@ -39,6 +39,8 @@ class InputFieldColors {
   final successText = const Color(0xFF27B274);
   final errorText = const Color(0xFFFF8080);
 
-  final icon = const Color(0xFF7C8696);
+  final enabledIcon= const Color(0xFF7C8696);
+  final successIcon = const Color(0xFF27B274);
+  final errorIcon = const Color(0xFFFF8080);
 
 }
