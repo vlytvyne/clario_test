@@ -8,6 +8,7 @@ class ClarioTextInputField extends StatefulWidget {
   final FocusNode focusNode;
   final ValidationState validationState;
   final String? errorText;
+  final bool hideErrorText;
 
   const ClarioTextInputField({
     super.key,
@@ -15,6 +16,7 @@ class ClarioTextInputField extends StatefulWidget {
     required this.focusNode,
     this.validationState = ValidationState.unknown,
     this.errorText,
+    this.hideErrorText = false,
   });
 
   @override
@@ -36,7 +38,10 @@ class _ClarioTextInputFieldState extends State<ClarioTextInputField> {
       },
       decoration: InputDecoration(
         errorText: widget.errorText,
-        errorStyle: TextStyle(color: AppColors.inputField.errorText),
+        errorStyle: TextStyle(
+          color: AppColors.inputField.errorText,
+          fontSize: widget.hideErrorText ? 0 : 12,
+        ),
         fillColor: switch (widget.validationState) {
           ValidationState.unknown => AppColors.inputField.enabledBackground,
           ValidationState.valid => AppColors.inputField.successBackground,
@@ -45,8 +50,8 @@ class _ClarioTextInputFieldState extends State<ClarioTextInputField> {
         filled: true,
         border: _composeBorder(AppColors.inputField.enabledBorder),
         enabledBorder: _composeBorder(widget.validationState == ValidationState.valid
-            ? AppColors.inputField.successBorder
-            : AppColors.inputField.enabledBorder),
+          ? AppColors.inputField.successBorder
+          : AppColors.inputField.enabledBorder),
         disabledBorder: _composeBorder(AppColors.inputField.enabledBorder),
         focusedBorder: _composeBorder(AppColors.inputField.focusedBorder),
         errorBorder: _composeBorder(AppColors.inputField.errorBorder),
